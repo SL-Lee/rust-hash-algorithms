@@ -21,37 +21,27 @@ const K: [u32; 64] = [
 
 #[allow(non_snake_case)]
 pub fn md5(message: &[u8]) -> String {
-    let mut message = message
-        .iter()
-        .map(|byte| format!("{:0>8b}", byte))
-        .collect::<String>();
-    let message_len = (message.len() as u64)
-        .to_le_bytes()
-        .iter()
-        .map(|byte| format!("{:0>8b}", byte))
-        .collect::<String>();
-    message.push('1');
+    let mut message = message.to_vec();
+    let message_len = (message.len() as u64).wrapping_mul(8).to_le_bytes();
+    message.push(0x80);
 
-    while (message.len() + 64) % 512 != 0 {
-        message.push('0');
+    // Pad message until it is 8 bytes (64 bits) less than a multiple of
+    // 64 bytes (512 bits)
+    while (message.len() + 8) % 64 != 0 {
+        message.push(0);
     }
 
-    message.push_str(&message_len);
+    message.extend(&message_len);
+    let chunks = message.chunks_exact(64).collect::<Vec<&[u8]>>();
     let mut A: u32 = 0x67452301;
     let mut B: u32 = 0xefcdab89;
     let mut C: u32 = 0x98badcfe;
     let mut D: u32 = 0x10325476;
 
-    for chunk_index in 0..message.len() / 512 {
-        let chunk = &message[chunk_index * 512..chunk_index * 512 + 512];
-        let bytes = (0..64)
-            .map(|i| u8::from_str_radix(&chunk[i * 8..i * 8 + 8], 2).unwrap())
-            .collect::<Vec<u8>>();
+    for chunk in chunks {
         let M = (0..16)
             .map(|i| {
-                u32::from_le_bytes(
-                    bytes[i * 4..i * 4 + 4].try_into().unwrap(),
-                )
+                u32::from_le_bytes(chunk[i * 4..i * 4 + 4].try_into().unwrap())
             })
             .collect::<Vec<u32>>();
 
@@ -96,15 +86,12 @@ pub fn md5(message: &[u8]) -> String {
         D = D.wrapping_add(d);
     }
 
-    let mut digest = String::with_capacity(32);
-
-    for register in &[A, B, C, D] {
-        for byte in &register.to_le_bytes() {
-            digest.push_str(&format!("{:0>2x}", byte));
-        }
-    }
-
-    digest
+    [A, B, C, D]
+        .iter()
+        .map(|register| register.to_le_bytes().to_vec())
+        .flatten()
+        .map(|byte| format!("{:0>2x}", byte))
+        .collect::<String>()
 }
 
 #[cfg(test)]
