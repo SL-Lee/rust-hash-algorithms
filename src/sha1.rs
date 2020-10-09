@@ -1,27 +1,28 @@
-pub fn sha1(message: &[u8]) -> String {
-    let mut message = message
-        .iter()
-        .map(|byte| format!("{:0>8b}", byte))
-        .collect::<String>();
-    let message_len = format!("{:0>64b}", message.len() as u64);
-    message.push('1');
+use std::convert::TryInto;
 
-    while (message.len() + 64) % 512 != 0 {
-        message.push('0');
+pub fn sha1(message: &[u8]) -> String {
+    let mut message = message.to_vec();
+    let message_len = (message.len() as u64).wrapping_mul(8).to_be_bytes();
+    message.push(0x80);
+
+    // Pad message until it is 8 bytes (64 bits) less than a multiple of
+    // 64 bytes (512 bits)
+    while (message.len() + 8) % 64 != 0 {
+        message.push(0);
     }
 
-    message.push_str(&message_len);
+    message.extend(&message_len);
+    let chunks = message.chunks_exact(64).collect::<Vec<&[u8]>>();
     let mut h0: u32 = 0x67452301;
     let mut h1: u32 = 0xefcdab89;
     let mut h2: u32 = 0x98badcfe;
     let mut h3: u32 = 0x10325476;
     let mut h4: u32 = 0xc3d2e1f0;
 
-    for chunk_index in 0..message.len() / 512 {
-        let chunk = &message[chunk_index * 512..chunk_index * 512 + 512];
+    for chunk in chunks {
         let mut w = (0..16)
             .map(|i| {
-                u32::from_str_radix(&chunk[i * 32..i * 32 + 32], 2).unwrap()
+                u32::from_be_bytes(chunk[i * 4..i * 4 + 4].try_into().unwrap())
             })
             .collect::<Vec<u32>>();
 
@@ -69,14 +70,10 @@ pub fn sha1(message: &[u8]) -> String {
         h4 = h4.wrapping_add(e);
     }
 
-    [
-        format!("{:0>8x}", h0),
-        format!("{:0>8x}", h1),
-        format!("{:0>8x}", h2),
-        format!("{:0>8x}", h3),
-        format!("{:0>8x}", h4),
-    ]
-    .join("")
+    [h0, h1, h2, h3, h4]
+        .iter()
+        .map(|word| format!("{:0>8x}", word))
+        .collect::<String>()
 }
 
 #[cfg(test)]
