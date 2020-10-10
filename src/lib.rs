@@ -9,7 +9,7 @@ mod sha512_256;
 mod sha512_t_iv_generator;
 
 pub use md5::MD5;
-pub use sha1::sha1;
+pub use sha1::SHA1;
 pub use sha224::sha224;
 pub use sha256::sha256;
 pub use sha384::sha384;
