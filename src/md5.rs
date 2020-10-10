@@ -19,79 +19,104 @@ const K: [u32; 64] = [
     0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391,
 ];
 
-#[allow(non_snake_case)]
-pub fn md5(message: &[u8]) -> String {
-    let mut message = message.to_vec();
-    let message_len = (message.len() as u64).wrapping_mul(8).to_le_bytes();
-    message.push(0x80);
+pub struct MD5 {
+    data: Vec<u8>,
+}
 
-    // Pad message until it is 8 bytes (64 bits) less than a multiple of
-    // 64 bytes (512 bits)
-    while (message.len() + 8) % 64 != 0 {
-        message.push(0);
+impl MD5 {
+    pub fn new() -> MD5 {
+        MD5 {
+            data: Vec::<u8>::new(),
+        }
     }
 
-    message.extend(&message_len);
-    let chunks = message.chunks_exact(64).collect::<Vec<&[u8]>>();
-    let mut A: u32 = 0x67452301;
-    let mut B: u32 = 0xefcdab89;
-    let mut C: u32 = 0x98badcfe;
-    let mut D: u32 = 0x10325476;
+    pub fn update(&mut self, data: &[u8]) {
+        self.data.extend(data);
+    }
 
-    for chunk in chunks {
-        let M = (0..16)
-            .map(|i| {
-                u32::from_le_bytes(chunk[i * 4..i * 4 + 4].try_into().unwrap())
-            })
-            .collect::<Vec<u32>>();
+    #[allow(non_snake_case)]
+    pub fn digest(&self) -> [u8; 16] {
+        let mut data = self.data.clone();
+        let data_len = (data.len() as u64).wrapping_mul(8).to_le_bytes();
+        data.push(0x80);
 
-        let (mut a, mut b, mut c, mut d) = (A, B, C, D);
-
-        for i in 0..64 {
-            let (F, g, s): (u32, usize, [u32; 4]);
-
-            if i < 16 {
-                F = (b & c) | (!b & d);
-                g = i;
-                s = [7, 12, 17, 22];
-            } else if i >= 16 && i < 32 {
-                F = (d & b) | (!d & c);
-                g = (5 * i + 1) % 16;
-                s = [5, 9, 14, 20];
-            } else if i >= 32 && i < 48 {
-                F = b ^ c ^ d;
-                g = (3 * i + 5) % 16;
-                s = [4, 11, 16, 23];
-            } else {
-                F = c ^ (b | !d);
-                g = (7 * i) % 16;
-                s = [6, 10, 15, 21];
-            }
-
-            a = a.wrapping_add(F);
-            a = a.wrapping_add(M[g]);
-            a = a.wrapping_add(K[i]);
-            a = a.rotate_left(s[i % 4]);
-            a = a.wrapping_add(b);
-            let temp = a;
-            a = d;
-            d = c;
-            c = b;
-            b = temp;
+        // Pad data until it is 8 bytes (64 bits) less than a multiple of
+        // 64 bytes (512 bits)
+        while (data.len() + 8) % 64 != 0 {
+            data.push(0);
         }
 
-        A = A.wrapping_add(a);
-        B = B.wrapping_add(b);
-        C = C.wrapping_add(c);
-        D = D.wrapping_add(d);
+        data.extend(&data_len);
+        let chunks = data.chunks_exact(64).collect::<Vec<&[u8]>>();
+        let mut A: u32 = 0x67452301;
+        let mut B: u32 = 0xefcdab89;
+        let mut C: u32 = 0x98badcfe;
+        let mut D: u32 = 0x10325476;
+
+        for chunk in chunks {
+            let M = (0..16)
+                .map(|i| {
+                    u32::from_le_bytes(
+                        chunk[i * 4..i * 4 + 4].try_into().unwrap(),
+                    )
+                })
+                .collect::<Vec<u32>>();
+
+            let (mut a, mut b, mut c, mut d) = (A, B, C, D);
+
+            for i in 0..64 {
+                let (F, g, s): (u32, usize, [u32; 4]);
+
+                if i < 16 {
+                    F = (b & c) | (!b & d);
+                    g = i;
+                    s = [7, 12, 17, 22];
+                } else if i >= 16 && i < 32 {
+                    F = (d & b) | (!d & c);
+                    g = (5 * i + 1) % 16;
+                    s = [5, 9, 14, 20];
+                } else if i >= 32 && i < 48 {
+                    F = b ^ c ^ d;
+                    g = (3 * i + 5) % 16;
+                    s = [4, 11, 16, 23];
+                } else {
+                    F = c ^ (b | !d);
+                    g = (7 * i) % 16;
+                    s = [6, 10, 15, 21];
+                }
+
+                a = a.wrapping_add(F);
+                a = a.wrapping_add(M[g]);
+                a = a.wrapping_add(K[i]);
+                a = a.rotate_left(s[i % 4]);
+                a = a.wrapping_add(b);
+                let temp = a;
+                a = d;
+                d = c;
+                c = b;
+                b = temp;
+            }
+
+            A = A.wrapping_add(a);
+            B = B.wrapping_add(b);
+            C = C.wrapping_add(c);
+            D = D.wrapping_add(d);
+        }
+
+        [A, B, C, D]
+            .iter()
+            .flat_map(|register| register.to_le_bytes().to_vec())
+            .collect::<Vec<u8>>()[..]
+            .try_into()
+            .unwrap()
     }
 
-    [A, B, C, D]
-        .iter()
-        .map(|register| register.to_le_bytes().to_vec())
-        .flatten()
-        .map(|byte| format!("{:0>2x}", byte))
-        .collect::<String>()
+    pub fn hexdigest(&self) -> String {
+        self.digest()
+            .iter()
+            .map(|byte| format!("{:0>2x}", byte))
+            .collect::<String>()
+    }
 }
 
 #[cfg(test)]
@@ -100,17 +125,25 @@ mod tests {
 
     #[test]
     fn md5_test() {
+        let mut hasher = MD5::new();
+
         assert_eq!(
             "d41d8cd98f00b204e9800998ecf8427e".to_string(),
-            md5("".as_bytes()),
+            hasher.hexdigest(),
         );
+
+        hasher.update("The quick brown fox jumps over the lazy dog".as_bytes());
+
         assert_eq!(
             "9e107d9d372bb6826bd81d3542a419d6".to_string(),
-            md5("The quick brown fox jumps over the lazy dog".as_bytes()),
+            hasher.hexdigest(),
         );
+
+        hasher.update(".".as_bytes());
+
         assert_eq!(
             "e4d909c290d0fb1ca068ffaddf22cbd0".to_string(),
-            md5("The quick brown fox jumps over the lazy dog.".as_bytes()),
-        );
+            hasher.hexdigest(),
+        )
     }
 }
