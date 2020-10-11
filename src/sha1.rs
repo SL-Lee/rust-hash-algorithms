@@ -35,12 +35,9 @@ impl SHA1 {
         let mut h4: u32 = 0xc3d2e1f0;
 
         for chunk in chunks {
-            let mut w = (0..16)
-                .map(|i| {
-                    u32::from_be_bytes(
-                        chunk[i * 4..i * 4 + 4].try_into().unwrap(),
-                    )
-                })
+            let mut w = chunk
+                .chunks_exact(4)
+                .map(|word| u32::from_be_bytes(word.try_into().unwrap()))
                 .collect::<Vec<u32>>();
 
             for i in 16..80 {

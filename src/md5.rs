@@ -54,12 +54,9 @@ impl MD5 {
         let mut D: u32 = 0x10325476;
 
         for chunk in chunks {
-            let M = (0..16)
-                .map(|i| {
-                    u32::from_le_bytes(
-                        chunk[i * 4..i * 4 + 4].try_into().unwrap(),
-                    )
-                })
+            let M = chunk
+                .chunks_exact(4)
+                .map(|word| u32::from_le_bytes(word.try_into().unwrap()))
                 .collect::<Vec<u32>>();
 
             let (mut a, mut b, mut c, mut d) = (A, B, C, D);

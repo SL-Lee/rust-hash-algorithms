@@ -53,10 +53,9 @@ pub fn sha512_t_iv_generator(message: &[u8]) -> String {
     let mut h7: u64 = 0x5be0cd19137e2179 ^ 0xa5a5a5a5a5a5a5a5;
 
     for chunk in chunks {
-        let mut w = (0..16)
-            .map(|i| {
-                u64::from_be_bytes(chunk[i * 8..i * 8 + 8].try_into().unwrap())
-            })
+        let mut w = chunk
+            .chunks_exact(8)
+            .map(|word| u64::from_be_bytes(word.try_into().unwrap()))
             .collect::<Vec<u64>>();
 
         for i in 16..80 {
