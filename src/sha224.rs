@@ -148,7 +148,7 @@ mod tests {
             hasher.hexdigest(),
         );
 
-        hasher.update("The quick brown fox jumps over the lazy dog".as_bytes());
+        hasher.update(b"The quick brown fox jumps over the lazy dog");
 
         assert_eq!(
             "730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525"
@@ -156,7 +156,7 @@ mod tests {
             hasher.hexdigest(),
         );
 
-        hasher.update(".".as_bytes());
+        hasher.update(b".");
 
         assert_eq!(
             "619cba8e8e05826e9b8c519c0a5c68f4fb653e8a3d8aa04bb2c8cd4c"

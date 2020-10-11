@@ -152,7 +152,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn sha2_512_test() {
+    fn sha512_test() {
         let mut hasher = SHA512::new();
 
         assert_eq!(
@@ -162,7 +162,7 @@ mod tests {
             hasher.hexdigest(),
         );
 
-        hasher.update("The quick brown fox jumps over the lazy dog".as_bytes());
+        hasher.update(b"The quick brown fox jumps over the lazy dog");
 
         assert_eq!(
             "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb642e\
@@ -171,7 +171,7 @@ mod tests {
             hasher.hexdigest(),
         );
 
-        hasher.update(".".as_bytes());
+        hasher.update(b".");
 
         assert_eq!(
             "91ea1245f20d46ae9a037a989f54f1f790f0a47607eeb8a14d12890cea77a1bbc6\

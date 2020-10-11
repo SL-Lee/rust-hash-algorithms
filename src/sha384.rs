@@ -152,7 +152,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn sha2_384_test() {
+    fn sha384_test() {
         let mut hasher = SHA384::new();
 
         assert_eq!(
@@ -161,7 +161,7 @@ mod tests {
             hasher.hexdigest(),
         );
 
-        hasher.update("The quick brown fox jumps over the lazy dog".as_bytes());
+        hasher.update(b"The quick brown fox jumps over the lazy dog");
 
         assert_eq!(
             "ca737f1014a48f4c0b6dd43cb177b0afd9e5169367544c494011e3317dbf9a509c\
@@ -169,7 +169,7 @@ mod tests {
             hasher.hexdigest(),
         );
 
-        hasher.update(".".as_bytes());
+        hasher.update(b".");
 
         assert_eq!(
             "ed892481d8272ca6df370bf706e4d7bc1b5739fa2177aae6c50e946678718fc67a\

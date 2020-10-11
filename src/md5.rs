@@ -132,14 +132,14 @@ mod tests {
             hasher.hexdigest(),
         );
 
-        hasher.update("The quick brown fox jumps over the lazy dog".as_bytes());
+        hasher.update(b"The quick brown fox jumps over the lazy dog");
 
         assert_eq!(
             "9e107d9d372bb6826bd81d3542a419d6".to_string(),
             hasher.hexdigest(),
         );
 
-        hasher.update(".".as_bytes());
+        hasher.update(b".");
 
         assert_eq!(
             "e4d909c290d0fb1ca068ffaddf22cbd0".to_string(),

@@ -60,7 +60,7 @@ impl SHA512_224 {
 
         data.extend(&data_len);
         let chunks = data.chunks_exact(128).collect::<Vec<&[u8]>>();
-        let iv = sha512_t_iv_generator("SHA-512/224".as_bytes());
+        let iv = sha512_t_iv_generator(b"SHA-512/224");
         let mut h0: u64 = u64::from_str_radix(&iv[0..16], 16).unwrap();
         let mut h1: u64 = u64::from_str_radix(&iv[16..32], 16).unwrap();
         let mut h2: u64 = u64::from_str_radix(&iv[32..48], 16).unwrap();
@@ -163,7 +163,7 @@ mod tests {
             hasher.hexdigest(),
         );
 
-        hasher.update("The quick brown fox jumps over the lazy dog".as_bytes());
+        hasher.update(b"The quick brown fox jumps over the lazy dog");
 
         assert_eq!(
             "944cd2847fb54558d4775db0485a50003111c8e5daa63fe722c6aa37"
@@ -171,7 +171,7 @@ mod tests {
             hasher.hexdigest(),
         );
 
-        hasher.update(".".as_bytes());
+        hasher.update(b".");
 
         assert_eq!(
             "6d6a9279495ec4061769752e7ff9c68b6b0b3c5a281b7917ce0572de"
