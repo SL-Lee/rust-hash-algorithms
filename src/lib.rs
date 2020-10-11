@@ -1,4 +1,3 @@
-mod keccak;
 mod md5;
 mod sha1;
 // SHA-2
@@ -10,6 +9,7 @@ mod sha512_224;
 mod sha512_256;
 mod sha512_t_iv_generator;
 // SHA-3
+mod keccak;
 mod sha3_224;
 mod sha3_256;
 mod sha3_384;
