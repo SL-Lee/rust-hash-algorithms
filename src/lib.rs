@@ -1,3 +1,4 @@
+mod keccak;
 mod md5;
 mod sha1;
 mod sha224;
