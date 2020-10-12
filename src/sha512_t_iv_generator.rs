@@ -1,7 +1,7 @@
 use std::convert::TryInto;
 
 #[allow(non_snake_case)]
-pub fn sha512_t_iv_generator(message: &[u8]) -> String {
+pub fn sha512_t_iv_generator(message: &[u8]) -> [u8; 64] {
     const K: [u64; 80] = [
         0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f,
         0xe9b5dba58189dbbc, 0x3956c25bf348b538, 0x59f111f1b605d019,
@@ -112,6 +112,8 @@ pub fn sha512_t_iv_generator(message: &[u8]) -> String {
 
     [h0, h1, h2, h3, h4, h5, h6, h7]
         .iter()
-        .map(|word| format!("{:0>16x}", word))
-        .collect::<String>()
+        .flat_map(|register| register.to_be_bytes().to_vec())
+        .collect::<Vec<u8>>()[..]
+        .try_into()
+        .unwrap()
 }

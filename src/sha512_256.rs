@@ -60,15 +60,20 @@ impl SHA512_256 {
 
         data.extend(&data_len);
         let chunks = data.chunks_exact(128).collect::<Vec<&[u8]>>();
-        let iv = sha512_t_iv_generator(b"SHA-512/256");
-        let mut h0: u64 = u64::from_str_radix(&iv[0..16], 16).unwrap();
-        let mut h1: u64 = u64::from_str_radix(&iv[16..32], 16).unwrap();
-        let mut h2: u64 = u64::from_str_radix(&iv[32..48], 16).unwrap();
-        let mut h3: u64 = u64::from_str_radix(&iv[48..64], 16).unwrap();
-        let mut h4: u64 = u64::from_str_radix(&iv[64..80], 16).unwrap();
-        let mut h5: u64 = u64::from_str_radix(&iv[80..96], 16).unwrap();
-        let mut h6: u64 = u64::from_str_radix(&iv[96..112], 16).unwrap();
-        let mut h7: u64 = u64::from_str_radix(&iv[112..128], 16).unwrap();
+        let iv = sha512_t_iv_generator(b"SHA-512/256")
+            .chunks_exact(8)
+            .map(|initial_hash_value| {
+                u64::from_be_bytes(initial_hash_value.try_into().unwrap())
+            })
+            .collect::<Vec<u64>>();
+        let mut h0: u64 = iv[0];
+        let mut h1: u64 = iv[1];
+        let mut h2: u64 = iv[2];
+        let mut h3: u64 = iv[3];
+        let mut h4: u64 = iv[4];
+        let mut h5: u64 = iv[5];
+        let mut h6: u64 = iv[6];
+        let mut h7: u64 = iv[7];
 
         for chunk in chunks {
             let mut w = chunk
