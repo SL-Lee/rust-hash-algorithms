@@ -126,6 +126,6 @@ mod tests {
         assert_eq!(
             "408d94384216f890ff7a0c3528e8bed1e0b01621".to_string(),
             hasher.hexdigest(),
-        )
+        );
     }
 }

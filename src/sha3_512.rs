@@ -61,6 +61,6 @@ mod tests {
             c9ce4d289f21d1c2f1f458828e33dc442100331b35e7eb031b5d38ba6460f8"
                 .to_string(),
             hasher.hexdigest(),
-        )
+        );
     }
 }

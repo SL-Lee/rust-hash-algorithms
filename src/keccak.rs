@@ -128,7 +128,7 @@ fn keccak_f1600_permutate(lanes: &mut Vec<Vec<u64>>) {
             let t = (0..5).map(|x| lanes[x][y]).collect::<Vec<u64>>();
 
             for x in 0..5 {
-                lanes[x][y] = t[x] ^ ((!t[(x + 1) % 5]) & t[(x + 2) % 5])
+                lanes[x][y] = t[x] ^ ((!t[(x + 1) % 5]) & t[(x + 2) % 5]);
             }
         }
 

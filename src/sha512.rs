@@ -175,6 +175,6 @@ mod tests {
             c7ed9cf205e67b7f2b8fd4c7dfd3a7a8617e45f3c463d481c7e586c39ac1ed"
                 .to_string(),
             hasher.hexdigest(),
-        )
+        );
     }
 }

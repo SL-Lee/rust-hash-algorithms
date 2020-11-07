@@ -159,6 +159,6 @@ mod tests {
             "ef537f25c895bfa782526529a9b63d97aa631564d5d789c2b765448c8635fb6c"
                 .to_string(),
             hasher.hexdigest(),
-        )
+        );
     }
 }

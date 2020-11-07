@@ -58,6 +58,6 @@ mod tests {
             "1a34d81695b622df178bc74df7124fe12fac0f64ba5250b78b99c1273d4b080168\
             e10652894ecad5f1f4d5b965437fb9".to_string(),
             hasher.hexdigest(),
-        )
+        );
     }
 }

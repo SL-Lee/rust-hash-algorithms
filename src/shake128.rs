@@ -55,6 +55,6 @@ mod tests {
             "634069e6b13c3af64c57f05babf5911b6acf1d309b9624fc92b0c0bd9f27f538"
                 .to_string(),
             hasher.hexdigest(256),
-        )
+        );
     }
 }

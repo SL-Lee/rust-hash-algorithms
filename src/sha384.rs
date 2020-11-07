@@ -172,6 +172,6 @@ mod tests {
             "ed892481d8272ca6df370bf706e4d7bc1b5739fa2177aae6c50e946678718fc67a\
             7af2819a021c2fc34e91bdb63409d7".to_string(),
             hasher.hexdigest(),
-        )
+        );
     }
 }

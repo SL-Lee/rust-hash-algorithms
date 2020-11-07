@@ -141,6 +141,6 @@ mod tests {
         assert_eq!(
             "e4d909c290d0fb1ca068ffaddf22cbd0".to_string(),
             hasher.hexdigest(),
-        )
+        );
     }
 }
