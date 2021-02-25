@@ -1,3 +1,3 @@
-# rust_hash_algorithms
+# rust-hash-algorithms
 
-Implementations of several hash algorithms in Rust
+Implementations of common hash algorithms in Rust

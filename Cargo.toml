@@ -1,5 +1,5 @@
 [package]
-name = "rust_hash_algorithms"
+name = "rust-hash-algorithms"
 version = "0.1.0"
 authors = ["SL-Lee <45960387+SL-Lee@users.noreply.github.com>"]
 edition = "2018"
