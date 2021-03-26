@@ -1,5 +1,7 @@
 use std::convert::TryInto;
 
+use crate::FixedLengthHasher;
+
 const K: [u32; 64] = [
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
     0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -18,19 +20,19 @@ pub struct SHA224 {
     data: Vec<u8>,
 }
 
-impl SHA224 {
-    pub fn new() -> SHA224 {
+impl FixedLengthHasher<28> for SHA224 {
+    fn new() -> SHA224 {
         SHA224 {
             data: Vec::<u8>::new(),
         }
     }
 
-    pub fn update(&mut self, data: &[u8]) {
+    fn update(&mut self, data: &[u8]) {
         self.data.extend(data);
     }
 
     #[allow(non_snake_case)]
-    pub fn digest(&self) -> [u8; 28] {
+    fn digest(&self) -> [u8; 28] {
         let mut data = self.data.to_vec();
         let data_len = (data.len() as u64).wrapping_mul(8).to_be_bytes();
         data.push(0x80);
@@ -113,16 +115,9 @@ impl SHA224 {
         [h0, h1, h2, h3, h4, h5, h6]
             .iter()
             .flat_map(|register| register.to_be_bytes().to_vec())
-            .collect::<Vec<u8>>()[..]
+            .collect::<Vec<u8>>()
             .try_into()
             .unwrap()
-    }
-
-    pub fn hexdigest(&self) -> String {
-        self.digest()
-            .iter()
-            .map(|byte| format!("{:0>2x}", byte))
-            .collect::<String>()
     }
 }
 

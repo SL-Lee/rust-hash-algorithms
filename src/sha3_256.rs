@@ -1,32 +1,27 @@
-use crate::keccak::keccak;
 use std::convert::TryInto;
+
+use crate::{keccak::keccak, FixedLengthHasher};
 
 pub struct SHA3_256 {
     data: Vec<u8>,
 }
 
-impl SHA3_256 {
-    pub fn new() -> SHA3_256 {
+impl FixedLengthHasher<32> for SHA3_256 {
+    fn new() -> SHA3_256 {
         SHA3_256 {
             data: Vec::<u8>::new(),
         }
     }
 
-    pub fn update(&mut self, data: &[u8]) {
+    fn update(&mut self, data: &[u8]) {
         self.data.extend(data);
     }
 
-    pub fn digest(&self) -> [u8; 32] {
-        keccak(1088, 512, &self.data, 0x06, 32).unwrap()[..]
+    fn digest(&self) -> [u8; 32] {
+        keccak(1088, 512, &self.data, 0x06, 32)
+            .unwrap()
             .try_into()
             .unwrap()
-    }
-
-    pub fn hexdigest(&self) -> String {
-        self.digest()
-            .iter()
-            .map(|byte| format!("{:0>2x}", byte))
-            .collect::<String>()
     }
 }
 

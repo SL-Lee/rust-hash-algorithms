@@ -1,21 +1,23 @@
 use std::convert::TryInto;
 
+use crate::FixedLengthHasher;
+
 pub struct SHA1 {
     data: Vec<u8>,
 }
 
-impl SHA1 {
-    pub fn new() -> SHA1 {
+impl FixedLengthHasher<20> for SHA1 {
+    fn new() -> SHA1 {
         SHA1 {
             data: Vec::<u8>::new(),
         }
     }
 
-    pub fn update(&mut self, data: &[u8]) {
+    fn update(&mut self, data: &[u8]) {
         self.data.extend(data);
     }
 
-    pub fn digest(&self) -> [u8; 20] {
+    fn digest(&self) -> [u8; 20] {
         let mut data = self.data.clone();
         let data_len = (data.len() as u64).wrapping_mul(8).to_be_bytes();
         data.push(0x80);
@@ -88,16 +90,9 @@ impl SHA1 {
         [h0, h1, h2, h3, h4]
             .iter()
             .flat_map(|register| register.to_be_bytes().to_vec())
-            .collect::<Vec<u8>>()[..]
+            .collect::<Vec<u8>>()
             .try_into()
             .unwrap()
-    }
-
-    pub fn hexdigest(&self) -> String {
-        self.digest()
-            .iter()
-            .map(|byte| format!("{:0>2x}", byte))
-            .collect::<String>()
     }
 }
 

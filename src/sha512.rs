@@ -1,5 +1,7 @@
 use std::convert::TryInto;
 
+use crate::FixedLengthHasher;
+
 const K: [u64; 80] = [
     0x428a2f98d728ae22,
     0x7137449123ef65cd,
@@ -87,19 +89,19 @@ pub struct SHA512 {
     data: Vec<u8>,
 }
 
-impl SHA512 {
-    pub fn new() -> SHA512 {
+impl FixedLengthHasher<64> for SHA512 {
+    fn new() -> SHA512 {
         SHA512 {
             data: Vec::<u8>::new(),
         }
     }
 
-    pub fn update(&mut self, data: &[u8]) {
+    fn update(&mut self, data: &[u8]) {
         self.data.extend(data);
     }
 
     #[allow(non_snake_case)]
-    pub fn digest(&self) -> [u8; 64] {
+    fn digest(&self) -> [u8; 64] {
         let mut data = self.data.to_vec();
         let data_len = (data.len() as u128).wrapping_mul(8).to_be_bytes();
         data.push(0x80);
@@ -184,16 +186,9 @@ impl SHA512 {
         [h0, h1, h2, h3, h4, h5, h6, h7]
             .iter()
             .flat_map(|register| register.to_be_bytes().to_vec())
-            .collect::<Vec<u8>>()[..]
+            .collect::<Vec<u8>>()
             .try_into()
             .unwrap()
-    }
-
-    pub fn hexdigest(&self) -> String {
-        self.digest()
-            .iter()
-            .map(|byte| format!("{:0>2x}", byte))
-            .collect::<String>()
     }
 }
 

@@ -33,3 +33,44 @@ pub use sha3_384::SHA3_384;
 pub use sha3_512::SHA3_512;
 pub use shake128::SHAKE128;
 pub use shake256::SHAKE256;
+
+pub trait FixedLengthHasher<const DIGEST_BYTE_LENGTH: usize> {
+    fn new() -> Self;
+
+    fn update(&mut self, data: &[u8]);
+
+    fn digest(&self) -> [u8; DIGEST_BYTE_LENGTH];
+
+    fn hexdigest(&self) -> String {
+        self.digest()
+            .iter()
+            .map(|byte| format!("{:0>2x}", byte))
+            .collect::<String>()
+    }
+}
+
+pub trait VariableLengthHasher {
+    fn new() -> Self;
+
+    fn update(&mut self, data: &[u8]);
+
+    fn digest(&self, length_in_bytes: usize) -> Vec<u8>;
+
+    fn hexdigest(&self, length_in_bytes: usize) -> String {
+        self.digest(length_in_bytes)
+            .iter()
+            .map(|byte| format!("{:0>2x}", byte))
+            .collect::<String>()
+    }
+
+    fn digest_const<const DIGEST_BYTE_LENGTH: usize>(
+        &self,
+    ) -> [u8; DIGEST_BYTE_LENGTH];
+
+    fn hexdigest_const<const DIGEST_BYTE_LENGTH: usize>(&self) -> String {
+        self.digest_const::<DIGEST_BYTE_LENGTH>()
+            .iter()
+            .map(|byte| format!("{:0>2x}", byte))
+            .collect::<String>()
+    }
+}

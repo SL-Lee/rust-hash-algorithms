@@ -1,5 +1,7 @@
 use std::convert::TryInto;
 
+use crate::FixedLengthHasher;
+
 const K: [u32; 64] = [
     0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a,
     0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -18,19 +20,19 @@ pub struct MD5 {
     data: Vec<u8>,
 }
 
-impl MD5 {
-    pub fn new() -> MD5 {
+impl FixedLengthHasher<16> for MD5 {
+    fn new() -> MD5 {
         MD5 {
             data: Vec::<u8>::new(),
         }
     }
 
-    pub fn update(&mut self, data: &[u8]) {
+    fn update(&mut self, data: &[u8]) {
         self.data.extend(data);
     }
 
     #[allow(non_snake_case)]
-    pub fn digest(&self) -> [u8; 16] {
+    fn digest(&self) -> [u8; 16] {
         let mut data = self.data.clone();
         let data_len = (data.len() as u64).wrapping_mul(8).to_le_bytes();
         data.push(0x80);
@@ -98,16 +100,9 @@ impl MD5 {
         [A, B, C, D]
             .iter()
             .flat_map(|register| register.to_le_bytes().to_vec())
-            .collect::<Vec<u8>>()[..]
+            .collect::<Vec<u8>>()
             .try_into()
             .unwrap()
-    }
-
-    pub fn hexdigest(&self) -> String {
-        self.digest()
-            .iter()
-            .map(|byte| format!("{:0>2x}", byte))
-            .collect::<String>()
     }
 }
 
