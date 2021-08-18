@@ -17,6 +17,7 @@ impl FixedLengthHasher<20> for SHA1 {
         self.data.extend(data);
     }
 
+    #[allow(clippy::many_single_char_names)]
     fn digest(&self) -> [u8; 20] {
         let mut data = self.data.clone();
         let data_len = (data.len() as u64).wrapping_mul(8).to_be_bytes();
@@ -51,16 +52,16 @@ impl FixedLengthHasher<20> for SHA1 {
 
             let (mut a, mut b, mut c, mut d, mut e) = (h0, h1, h2, h3, h4);
 
-            for i in 0..80 {
+            for (i, current_message_word) in w.iter().enumerate().take(80) {
                 let (f, k): (u32, u32);
 
                 if i < 20 {
                     f = (b & c) | (!b & d);
                     k = 0x5a827999;
-                } else if i >= 20 && i < 40 {
+                } else if (20..40).contains(&i) {
                     f = b ^ c ^ d;
                     k = 0x6ed9eba1;
-                } else if i >= 40 && i < 60 {
+                } else if (40..60).contains(&i) {
                     f = (b & c) | (b & d) | (c & d);
                     k = 0x8f1bbcdc;
                 } else {
@@ -70,7 +71,7 @@ impl FixedLengthHasher<20> for SHA1 {
 
                 e = e.wrapping_add(f);
                 e = e.wrapping_add(a.rotate_left(5));
-                e = e.wrapping_add(w[i]);
+                e = e.wrapping_add(*current_message_word);
                 e = e.wrapping_add(k);
                 let temp = e;
                 e = d;

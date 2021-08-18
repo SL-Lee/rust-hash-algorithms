@@ -100,7 +100,7 @@ impl FixedLengthHasher<48> for SHA384 {
         self.data.extend(data);
     }
 
-    #[allow(non_snake_case)]
+    #[allow(non_snake_case, clippy::many_single_char_names)]
     fn digest(&self) -> [u8; 48] {
         let mut data = self.data.to_vec();
         let data_len = (data.len() as u128).wrapping_mul(8).to_be_bytes();

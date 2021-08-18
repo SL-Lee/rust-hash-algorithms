@@ -31,7 +31,7 @@ impl FixedLengthHasher<16> for MD5 {
         self.data.extend(data);
     }
 
-    #[allow(non_snake_case)]
+    #[allow(non_snake_case, clippy::many_single_char_names)]
     fn digest(&self) -> [u8; 16] {
         let mut data = self.data.clone();
         let data_len = (data.len() as u64).wrapping_mul(8).to_le_bytes();
@@ -65,11 +65,11 @@ impl FixedLengthHasher<16> for MD5 {
                     F = (b & c) | (!b & d);
                     g = i;
                     s = [7, 12, 17, 22];
-                } else if i >= 16 && i < 32 {
+                } else if (16..32).contains(&i) {
                     F = (d & b) | (!d & c);
                     g = (5 * i + 1) % 16;
                     s = [5, 9, 14, 20];
-                } else if i >= 32 && i < 48 {
+                } else if (32..48).contains(&i) {
                     F = b ^ c ^ d;
                     g = (3 * i + 5) % 16;
                     s = [4, 11, 16, 23];

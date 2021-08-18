@@ -1,6 +1,6 @@
 use std::convert::TryInto;
 
-#[allow(non_snake_case)]
+#[allow(non_snake_case, clippy::many_single_char_names)]
 pub fn sha512_t_iv_generator(message: &[u8]) -> [u8; 64] {
     const K: [u64; 80] = [
         0x428a2f98d728ae22,

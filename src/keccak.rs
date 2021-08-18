@@ -86,6 +86,7 @@ fn keccak_f1600(state: &mut Vec<u8>) {
     }
 }
 
+#[allow(clippy::many_single_char_names)]
 fn keccak_f1600_permutate(lanes: &mut Vec<Vec<u64>>) {
     let mut r = 1;
 
