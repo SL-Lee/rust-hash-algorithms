@@ -63,9 +63,7 @@ pub trait VariableLengthHasher {
             .collect::<String>()
     }
 
-    fn digest_const<const DIGEST_BYTE_LENGTH: usize>(
-        &self,
-    ) -> [u8; DIGEST_BYTE_LENGTH];
+    fn digest_const<const DIGEST_BYTE_LENGTH: usize>(&self) -> [u8; DIGEST_BYTE_LENGTH];
 
     fn hexdigest_const<const DIGEST_BYTE_LENGTH: usize>(&self) -> String {
         self.digest_const::<DIGEST_BYTE_LENGTH>()

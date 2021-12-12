@@ -44,10 +44,7 @@ impl FixedLengthHasher<20> for SHA1 {
                 .collect::<Vec<u32>>();
 
             for i in 16..80 {
-                w.push(
-                    (w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16])
-                        .rotate_left(1),
-                );
+                w.push((w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16]).rotate_left(1));
             }
 
             let (mut a, mut b, mut c, mut d, mut e) = (h0, h1, h2, h3, h4);

@@ -112,12 +112,8 @@ pub fn sha512_t_iv_generator(message: &[u8]) -> [u8; 64] {
             .collect::<Vec<u64>>();
 
         for i in 16..80 {
-            let s0 = w[i - 15].rotate_right(1)
-                ^ w[i - 15].rotate_right(8)
-                ^ w[i - 15] >> 7;
-            let s1 = w[i - 2].rotate_right(19)
-                ^ w[i - 2].rotate_right(61)
-                ^ w[i - 2] >> 6;
+            let s0 = w[i - 15].rotate_right(1) ^ w[i - 15].rotate_right(8) ^ w[i - 15] >> 7;
+            let s1 = w[i - 2].rotate_right(19) ^ w[i - 2].rotate_right(61) ^ w[i - 2] >> 6;
             w.push(
                 w[i - 16]
                     .wrapping_add(s0)
@@ -130,16 +126,14 @@ pub fn sha512_t_iv_generator(message: &[u8]) -> [u8; 64] {
             (h0, h1, h2, h3, h4, h5, h6, h7);
 
         for i in 0..80 {
-            let S1 =
-                e.rotate_right(14) ^ e.rotate_right(18) ^ e.rotate_right(41);
+            let S1 = e.rotate_right(14) ^ e.rotate_right(18) ^ e.rotate_right(41);
             let ch = (e & f) ^ (!e & g);
             let temp1 = h
                 .wrapping_add(S1)
                 .wrapping_add(ch)
                 .wrapping_add(K[i])
                 .wrapping_add(w[i]);
-            let S0 =
-                a.rotate_right(28) ^ a.rotate_right(34) ^ a.rotate_right(39);
+            let S0 = a.rotate_right(28) ^ a.rotate_right(34) ^ a.rotate_right(39);
             let maj = (a & b) ^ (a & c) ^ (b & c);
             let temp2 = S0.wrapping_add(maj);
 

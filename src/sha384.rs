@@ -130,12 +130,8 @@ impl FixedLengthHasher<48> for SHA384 {
                 .collect::<Vec<u64>>();
 
             for i in 16..80 {
-                let s0 = w[i - 15].rotate_right(1)
-                    ^ w[i - 15].rotate_right(8)
-                    ^ w[i - 15] >> 7;
-                let s1 = w[i - 2].rotate_right(19)
-                    ^ w[i - 2].rotate_right(61)
-                    ^ w[i - 2] >> 6;
+                let s0 = w[i - 15].rotate_right(1) ^ w[i - 15].rotate_right(8) ^ w[i - 15] >> 7;
+                let s1 = w[i - 2].rotate_right(19) ^ w[i - 2].rotate_right(61) ^ w[i - 2] >> 6;
                 w.push(
                     w[i - 16]
                         .wrapping_add(s0)
@@ -148,18 +144,14 @@ impl FixedLengthHasher<48> for SHA384 {
                 (h0, h1, h2, h3, h4, h5, h6, h7);
 
             for i in 0..80 {
-                let S1 = e.rotate_right(14)
-                    ^ e.rotate_right(18)
-                    ^ e.rotate_right(41);
+                let S1 = e.rotate_right(14) ^ e.rotate_right(18) ^ e.rotate_right(41);
                 let ch = (e & f) ^ (!e & g);
                 let temp1 = h
                     .wrapping_add(S1)
                     .wrapping_add(ch)
                     .wrapping_add(K[i])
                     .wrapping_add(w[i]);
-                let S0 = a.rotate_right(28)
-                    ^ a.rotate_right(34)
-                    ^ a.rotate_right(39);
+                let S0 = a.rotate_right(28) ^ a.rotate_right(34) ^ a.rotate_right(39);
                 let maj = (a & b) ^ (a & c) ^ (b & c);
                 let temp2 = S0.wrapping_add(maj);
 
@@ -201,24 +193,24 @@ mod tests {
         let mut hasher = SHA384::new();
 
         assert_eq!(
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da27\
-            4edebfe76f65fbd51ad2f14898b95b".to_string(),
+            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2\
+            f14898b95b".to_string(),
             hasher.hexdigest(),
         );
 
         hasher.update(b"The quick brown fox jumps over the lazy dog");
 
         assert_eq!(
-            "ca737f1014a48f4c0b6dd43cb177b0afd9e5169367544c494011e3317dbf9a509c\
-            b1e5dc1e85a941bbee3d7f2afbc9b1".to_string(),
+            "ca737f1014a48f4c0b6dd43cb177b0afd9e5169367544c494011e3317dbf9a509cb1e5dc1e85a941bbee3d\
+            7f2afbc9b1".to_string(),
             hasher.hexdigest(),
         );
 
         hasher.update(b".");
 
         assert_eq!(
-            "ed892481d8272ca6df370bf706e4d7bc1b5739fa2177aae6c50e946678718fc67a\
-            7af2819a021c2fc34e91bdb63409d7".to_string(),
+            "ed892481d8272ca6df370bf706e4d7bc1b5739fa2177aae6c50e946678718fc67a7af2819a021c2fc34e91\
+            bdb63409d7".to_string(),
             hasher.hexdigest(),
         );
     }

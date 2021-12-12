@@ -116,9 +116,7 @@ impl FixedLengthHasher<32> for SHA512_256 {
         let chunks = data.chunks_exact(128).collect::<Vec<&[u8]>>();
         let iv = sha512_t_iv_generator(b"SHA-512/256")
             .chunks_exact(8)
-            .map(|initial_hash_value| {
-                u64::from_be_bytes(initial_hash_value.try_into().unwrap())
-            })
+            .map(|initial_hash_value| u64::from_be_bytes(initial_hash_value.try_into().unwrap()))
             .collect::<Vec<u64>>();
         let mut h0: u64 = iv[0];
         let mut h1: u64 = iv[1];
@@ -136,12 +134,8 @@ impl FixedLengthHasher<32> for SHA512_256 {
                 .collect::<Vec<u64>>();
 
             for i in 16..80 {
-                let s0 = w[i - 15].rotate_right(1)
-                    ^ w[i - 15].rotate_right(8)
-                    ^ w[i - 15] >> 7;
-                let s1 = w[i - 2].rotate_right(19)
-                    ^ w[i - 2].rotate_right(61)
-                    ^ w[i - 2] >> 6;
+                let s0 = w[i - 15].rotate_right(1) ^ w[i - 15].rotate_right(8) ^ w[i - 15] >> 7;
+                let s1 = w[i - 2].rotate_right(19) ^ w[i - 2].rotate_right(61) ^ w[i - 2] >> 6;
                 w.push(
                     w[i - 16]
                         .wrapping_add(s0)
@@ -154,18 +148,14 @@ impl FixedLengthHasher<32> for SHA512_256 {
                 (h0, h1, h2, h3, h4, h5, h6, h7);
 
             for i in 0..80 {
-                let S1 = e.rotate_right(14)
-                    ^ e.rotate_right(18)
-                    ^ e.rotate_right(41);
+                let S1 = e.rotate_right(14) ^ e.rotate_right(18) ^ e.rotate_right(41);
                 let ch = (e & f) ^ (!e & g);
                 let temp1 = h
                     .wrapping_add(S1)
                     .wrapping_add(ch)
                     .wrapping_add(K[i])
                     .wrapping_add(w[i]);
-                let S0 = a.rotate_right(28)
-                    ^ a.rotate_right(34)
-                    ^ a.rotate_right(39);
+                let S0 = a.rotate_right(28) ^ a.rotate_right(34) ^ a.rotate_right(39);
                 let maj = (a & b) ^ (a & c) ^ (b & c);
                 let temp2 = S0.wrapping_add(maj);
 
@@ -207,24 +197,21 @@ mod tests {
         let mut hasher = SHA512_256::new();
 
         assert_eq!(
-            "c672b8d1ef56ed28ab87c3622c5114069bdd3ad7b8f9737498d0c01ecef0967a"
-                .to_string(),
+            "c672b8d1ef56ed28ab87c3622c5114069bdd3ad7b8f9737498d0c01ecef0967a".to_string(),
             hasher.hexdigest(),
         );
 
         hasher.update(b"The quick brown fox jumps over the lazy dog");
 
         assert_eq!(
-            "dd9d67b371519c339ed8dbd25af90e976a1eeefd4ad3d889005e532fc5bef04d"
-                .to_string(),
+            "dd9d67b371519c339ed8dbd25af90e976a1eeefd4ad3d889005e532fc5bef04d".to_string(),
             hasher.hexdigest(),
         );
 
         hasher.update(b".");
 
         assert_eq!(
-            "1546741840f8a492b959d9b8b2344b9b0eb51b004bba35c0aebaac86d45264c3"
-                .to_string(),
+            "1546741840f8a492b959d9b8b2344b9b0eb51b004bba35c0aebaac86d45264c3".to_string(),
             hasher.hexdigest(),
         );
     }

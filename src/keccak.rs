@@ -93,13 +93,7 @@ fn keccak_f1600_permutate(lanes: &mut Vec<Vec<u64>>) {
     for _ in 0..24 {
         // θ
         let c = (0..5)
-            .map(|x| {
-                lanes[x][0]
-                    ^ lanes[x][1]
-                    ^ lanes[x][2]
-                    ^ lanes[x][3]
-                    ^ lanes[x][4]
-            })
+            .map(|x| lanes[x][0] ^ lanes[x][1] ^ lanes[x][2] ^ lanes[x][3] ^ lanes[x][4])
             .collect::<Vec<u64>>();
         let d = (0..5)
             .map(|x| c[(x + 4) % 5] ^ c[(x + 1) % 5].rotate_left(1))
