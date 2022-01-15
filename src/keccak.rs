@@ -67,9 +67,7 @@ fn keccak_f1600(state: &mut Vec<u8>) {
             (0..5)
                 .map(|y| {
                     u64::from_le_bytes(
-                        state[8 * (x + 5 * y)..8 * (x + 5 * y) + 8]
-                            .try_into()
-                            .unwrap(),
+                        state[8 * (x + 5 * y)..8 * (x + 5 * y) + 8].try_into().unwrap(),
                     )
                 })
                 .collect::<Vec<u64>>()
@@ -95,9 +93,8 @@ fn keccak_f1600_permutate(lanes: &mut Vec<Vec<u64>>) {
         let c = (0..5)
             .map(|x| lanes[x][0] ^ lanes[x][1] ^ lanes[x][2] ^ lanes[x][3] ^ lanes[x][4])
             .collect::<Vec<u64>>();
-        let d = (0..5)
-            .map(|x| c[(x + 4) % 5] ^ c[(x + 1) % 5].rotate_left(1))
-            .collect::<Vec<u64>>();
+        let d =
+            (0..5).map(|x| c[(x + 4) % 5] ^ c[(x + 1) % 5].rotate_left(1)).collect::<Vec<u64>>();
 
         for x in 0..5 {
             for y in 0..5 {

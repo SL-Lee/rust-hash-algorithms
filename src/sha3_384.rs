@@ -8,9 +8,7 @@ pub struct SHA3_384 {
 
 impl FixedLengthHasher<48> for SHA3_384 {
     fn new() -> SHA3_384 {
-        SHA3_384 {
-            data: Vec::<u8>::new(),
-        }
+        SHA3_384 { data: Vec::<u8>::new() }
     }
 
     fn update(&mut self, data: &[u8]) {
@@ -18,10 +16,7 @@ impl FixedLengthHasher<48> for SHA3_384 {
     }
 
     fn digest(&self) -> [u8; 48] {
-        keccak(832, 768, &self.data, 0x06, 48)
-            .unwrap()
-            .try_into()
-            .unwrap()
+        keccak(832, 768, &self.data, 0x06, 48).unwrap().try_into().unwrap()
     }
 }
 

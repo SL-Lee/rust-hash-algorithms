@@ -8,9 +8,7 @@ pub struct SHAKE256 {
 
 impl VariableLengthHasher for SHAKE256 {
     fn new() -> SHAKE256 {
-        SHAKE256 {
-            data: Vec::<u8>::new(),
-        }
+        SHAKE256 { data: Vec::<u8>::new() }
     }
 
     fn update(&mut self, data: &[u8]) {
@@ -22,10 +20,7 @@ impl VariableLengthHasher for SHAKE256 {
     }
 
     fn digest_const<const DIGEST_BYTE_LENGTH: usize>(&self) -> [u8; DIGEST_BYTE_LENGTH] {
-        keccak(1088, 512, &self.data, 0x1f, DIGEST_BYTE_LENGTH)
-            .unwrap()
-            .try_into()
-            .unwrap()
+        keccak(1088, 512, &self.data, 0x1f, DIGEST_BYTE_LENGTH).unwrap().try_into().unwrap()
     }
 }
 

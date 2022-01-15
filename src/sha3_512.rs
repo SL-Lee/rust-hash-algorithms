@@ -8,9 +8,7 @@ pub struct SHA3_512 {
 
 impl FixedLengthHasher<64> for SHA3_512 {
     fn new() -> SHA3_512 {
-        SHA3_512 {
-            data: Vec::<u8>::new(),
-        }
+        SHA3_512 { data: Vec::<u8>::new() }
     }
 
     fn update(&mut self, data: &[u8]) {
@@ -18,10 +16,7 @@ impl FixedLengthHasher<64> for SHA3_512 {
     }
 
     fn digest(&self) -> [u8; 64] {
-        keccak(576, 1024, &self.data, 0x06, 64)
-            .unwrap()
-            .try_into()
-            .unwrap()
+        keccak(576, 1024, &self.data, 0x06, 64).unwrap().try_into().unwrap()
     }
 }
 

@@ -91,9 +91,7 @@ pub struct SHA384 {
 
 impl FixedLengthHasher<48> for SHA384 {
     fn new() -> SHA384 {
-        SHA384 {
-            data: Vec::<u8>::new(),
-        }
+        SHA384 { data: Vec::<u8>::new() }
     }
 
     fn update(&mut self, data: &[u8]) {
@@ -132,12 +130,7 @@ impl FixedLengthHasher<48> for SHA384 {
             for i in 16..80 {
                 let s0 = w[i - 15].rotate_right(1) ^ w[i - 15].rotate_right(8) ^ w[i - 15] >> 7;
                 let s1 = w[i - 2].rotate_right(19) ^ w[i - 2].rotate_right(61) ^ w[i - 2] >> 6;
-                w.push(
-                    w[i - 16]
-                        .wrapping_add(s0)
-                        .wrapping_add(w[i - 7])
-                        .wrapping_add(s1),
-                );
+                w.push(w[i - 16].wrapping_add(s0).wrapping_add(w[i - 7]).wrapping_add(s1));
             }
 
             let (mut a, mut b, mut c, mut d, mut e, mut f, mut g, mut h) =
@@ -146,11 +139,8 @@ impl FixedLengthHasher<48> for SHA384 {
             for i in 0..80 {
                 let S1 = e.rotate_right(14) ^ e.rotate_right(18) ^ e.rotate_right(41);
                 let ch = (e & f) ^ (!e & g);
-                let temp1 = h
-                    .wrapping_add(S1)
-                    .wrapping_add(ch)
-                    .wrapping_add(K[i])
-                    .wrapping_add(w[i]);
+                let temp1 =
+                    h.wrapping_add(S1).wrapping_add(ch).wrapping_add(K[i]).wrapping_add(w[i]);
                 let S0 = a.rotate_right(28) ^ a.rotate_right(34) ^ a.rotate_right(39);
                 let maj = (a & b) ^ (a & c) ^ (b & c);
                 let temp2 = S0.wrapping_add(maj);

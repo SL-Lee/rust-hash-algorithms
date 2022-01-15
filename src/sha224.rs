@@ -19,9 +19,7 @@ pub struct SHA224 {
 
 impl FixedLengthHasher<28> for SHA224 {
     fn new() -> SHA224 {
-        SHA224 {
-            data: Vec::<u8>::new(),
-        }
+        SHA224 { data: Vec::<u8>::new() }
     }
 
     fn update(&mut self, data: &[u8]) {
@@ -60,12 +58,7 @@ impl FixedLengthHasher<28> for SHA224 {
             for i in 16..64 {
                 let s0 = w[i - 15].rotate_right(7) ^ w[i - 15].rotate_right(18) ^ w[i - 15] >> 3;
                 let s1 = w[i - 2].rotate_right(17) ^ w[i - 2].rotate_right(19) ^ w[i - 2] >> 10;
-                w.push(
-                    w[i - 16]
-                        .wrapping_add(s0)
-                        .wrapping_add(w[i - 7])
-                        .wrapping_add(s1),
-                );
+                w.push(w[i - 16].wrapping_add(s0).wrapping_add(w[i - 7]).wrapping_add(s1));
             }
 
             let (mut a, mut b, mut c, mut d, mut e, mut f, mut g, mut h) =
@@ -74,11 +67,8 @@ impl FixedLengthHasher<28> for SHA224 {
             for i in 0..64 {
                 let S1 = e.rotate_right(6) ^ e.rotate_right(11) ^ e.rotate_right(25);
                 let ch = (e & f) ^ (!e & g);
-                let temp1 = h
-                    .wrapping_add(S1)
-                    .wrapping_add(ch)
-                    .wrapping_add(K[i])
-                    .wrapping_add(w[i]);
+                let temp1 =
+                    h.wrapping_add(S1).wrapping_add(ch).wrapping_add(K[i]).wrapping_add(w[i]);
                 let S0 = a.rotate_right(2) ^ a.rotate_right(13) ^ a.rotate_right(22);
                 let maj = (a & b) ^ (a & c) ^ (b & c);
                 let temp2 = S0.wrapping_add(maj);
