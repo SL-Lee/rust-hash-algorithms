@@ -42,7 +42,7 @@ pub trait FixedLengthHasher<const DIGEST_BYTE_LENGTH: usize> {
     fn digest(&self) -> [u8; DIGEST_BYTE_LENGTH];
 
     fn hexdigest(&self) -> String {
-        self.digest().iter().map(|byte| format!("{:0>2x}", byte)).collect::<String>()
+        self.digest().iter().map(|byte| format!("{byte:0>2x}")).collect::<String>()
     }
 }
 
@@ -54,7 +54,7 @@ pub trait VariableLengthHasher {
     fn digest(&self, length_in_bytes: usize) -> Vec<u8>;
 
     fn hexdigest(&self, length_in_bytes: usize) -> String {
-        self.digest(length_in_bytes).iter().map(|byte| format!("{:0>2x}", byte)).collect::<String>()
+        self.digest(length_in_bytes).iter().map(|byte| format!("{byte:0>2x}")).collect::<String>()
     }
 
     fn digest_const<const DIGEST_BYTE_LENGTH: usize>(&self) -> [u8; DIGEST_BYTE_LENGTH];
@@ -62,7 +62,7 @@ pub trait VariableLengthHasher {
     fn hexdigest_const<const DIGEST_BYTE_LENGTH: usize>(&self) -> String {
         self.digest_const::<DIGEST_BYTE_LENGTH>()
             .iter()
-            .map(|byte| format!("{:0>2x}", byte))
+            .map(|byte| format!("{byte:0>2x}"))
             .collect::<String>()
     }
 }
