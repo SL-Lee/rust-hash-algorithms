@@ -100,14 +100,14 @@ mod tests {
     fn sha1_test() {
         let mut hasher = SHA1::new();
 
-        assert_eq!("da39a3ee5e6b4b0d3255bfef95601890afd80709".to_string(), hasher.hexdigest(),);
+        assert_eq!("da39a3ee5e6b4b0d3255bfef95601890afd80709".to_string(), hasher.hexdigest());
 
         hasher.update(b"The quick brown fox jumps over the lazy dog");
 
-        assert_eq!("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12".to_string(), hasher.hexdigest(),);
+        assert_eq!("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12".to_string(), hasher.hexdigest());
 
         hasher.update(b".");
 
-        assert_eq!("408d94384216f890ff7a0c3528e8bed1e0b01621".to_string(), hasher.hexdigest(),);
+        assert_eq!("408d94384216f890ff7a0c3528e8bed1e0b01621".to_string(), hasher.hexdigest());
     }
 }
